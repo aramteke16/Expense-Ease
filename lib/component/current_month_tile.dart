@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_month_picker/flutter_month_picker.dart';
+import 'package:month_picker_dialog/month_picker_dialog.dart';
 
 import '../Scenes/monthly_transaction_info.dart';
 

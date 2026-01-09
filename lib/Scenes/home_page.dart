@@ -6,7 +6,7 @@ import 'package:expense_ease/component/heading_tile.dart';
 import 'package:expense_ease/component/message_tile.dart';
 import 'package:expense_ease/component/show_latest_transaction.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_month_picker/flutter_month_picker.dart';
+import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'package:intl/intl.dart';
 import '../component/expense_income_tile.dart';
 import '../component/savings_tile.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker_bdaya/flutter_datetime_picker_bdaya.dart';
-import 'package:flutter_month_picker/flutter_month_picker.dart';
+import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'package:intl/intl.dart';
 
 

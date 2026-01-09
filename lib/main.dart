@@ -1,8 +1,8 @@
 
 import 'package:expense_ease/Scenes/add_item_page.dart';
-import 'package:expense_ease/Scenes/setting_page.dart';
+import 'package:expense_ease/Scenes/setting_page.dart';  
 import 'package:flutter/services.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:expense_ease/Scenes/home_page.dart';
 import 'package:expense_ease/db/expense_db.dart';
 import 'package:flutter/material.dart';
@@ -361,111 +361,99 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  List<Widget> _buildScreens() {
+  List<PersistentTabConfig> _navBarItems() {
     return [
-      HomePage(
-        currency: db.currency,
-        userName: db.userName,
-        startDate: db.startDate??DateTime.now(),
-        savings: db.totalSavings.toString(),
-        monthlyExpenseIncome: db.monthlyExpenseIncome,
-        monthlyCategoryAmount: db.monthlyCategoryAmount,
-        paymentMessage: db.paymentMessage,
-        monthlyPaymentMessage: db.monthlyPaymentMessage,
-        changeStartDate: _changeStartDate,
-      ),
-      AddItems(
-        category: category,
-        addNewTransactions: _addNewTransactions,
-      ),
-      SettingPage(
-        userName: db.userName,
-        changeName: _changeUserName,
-        startDate: db.startDate??DateTime.now(),
-        changeStartDate: _changeStartDate,
-        currency: db.currency,
-        changeCurrency: _changeCurrency,
-      ),
-    ];
-  }
-
-  List<PersistentBottomNavBarItem> _navBarsItems() {
-    return [
-      PersistentBottomNavBarItem(
-        icon: Icon(Icons.home),
-        title: ("Home"),
-        activeColorPrimary: Colors.white70,
-        inactiveColorPrimary: Colors.white24,
-      ),
-      PersistentBottomNavBarItem(
-        icon: const Icon(
-            Icons.add,
-            color: Colors.black,
+      PersistentTabConfig(
+        screen: HomePage(
+          currency: db.currency,
+          userName: db.userName,
+          startDate: db.startDate ?? DateTime.now(),
+          savings: db.totalSavings.toString(),
+          monthlyExpenseIncome: db.monthlyExpenseIncome,
+          monthlyCategoryAmount: db.monthlyCategoryAmount,
+          paymentMessage: db.paymentMessage,
+          monthlyPaymentMessage: db.monthlyPaymentMessage,
+          changeStartDate: _changeStartDate,
         ),
-        title: ("Add"),
-        activeColorPrimary: Colors.grey,
-        inactiveColorPrimary: Colors.grey,
+        item: ItemConfig(
+          icon: const Icon(Icons.home),
+          title: "Home",
+          activeForegroundColor: Colors.white70,
+          inactiveForegroundColor: Colors.white24,
+        ),
       ),
-      PersistentBottomNavBarItem(
-        icon: Icon(Icons.settings),
-        title: ("Settings"),
-        activeColorPrimary: Colors.white70,
-        inactiveColorPrimary: Colors.white24,
+      PersistentTabConfig(
+        screen: AddItems(
+          category: category,
+          addNewTransactions: _addNewTransactions,
+        ),
+        item: ItemConfig(
+          icon: const Icon(Icons.add, color: Colors.black),
+          title: "Add",
+          activeForegroundColor: Colors.grey,
+          inactiveForegroundColor: Colors.grey,
+        ),
+      ),
+      PersistentTabConfig(
+        screen: SettingPage(
+          userName: db.userName,
+          changeName: _changeUserName,
+          startDate: db.startDate ?? DateTime.now(),
+          changeStartDate: _changeStartDate,
+          currency: db.currency,
+          changeCurrency: _changeCurrency,
+        ),
+        item: ItemConfig(
+          icon: const Icon(Icons.settings),
+          title: "Settings",
+          activeForegroundColor: Colors.white70,
+          inactiveForegroundColor: Colors.white24,
+        ),
       ),
     ];
   }
 
   @override
   Widget build(BuildContext context) {
-    PersistentTabController _controller;
-    _controller = PersistentTabController(initialIndex: 0);
-
     return MaterialApp(
       title: 'ExpenseEase',
       darkTheme: ThemeData(
-        brightness: Brightness.dark, // Set the overall brightness to dark
-        primaryColor: Colors.black, // Set the primary color to black
-        hintColor: Colors.white, // Set the accent color to white
+        brightness: Brightness.dark,
+        primaryColor: Colors.black,
+        hintColor: Colors.white,
         scaffoldBackgroundColor: Colors.black,
         appBarTheme: const AppBarTheme(
-          color: Colors.black,
-        )
+          backgroundColor: Colors.black,
+        ),
       ),
       theme: ThemeData(
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: (!loading)?PersistentTabView(
-          context,
-          controller: _controller,
-          screens: _buildScreens(),
-          items: _navBarsItems(),
-          confineInSafeArea: true,
-          backgroundColor: Colors.black, // Default is Colors.white.
-          handleAndroidBackButtonPress: true, // Default is true.
-          resizeToAvoidBottomInset: true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
-          stateManagement: true, // Default is true.
-          hideNavigationBarWhenKeyboardShows: true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
-          decoration: NavBarDecoration(
-            borderRadius: BorderRadius.circular(0),
-            colorBehindNavBar: Colors.black,
-          ),
-          popAllScreensOnTapOfSelectedTab: true,
-          popActionScreens: PopActionScreensType.all,
-          itemAnimationProperties: const ItemAnimationProperties( // Navigation Bar's items animation properties.
-            duration: Duration(milliseconds: 200),
-            curve: Curves.ease,
-          ),
-          screenTransitionAnimation: const ScreenTransitionAnimation( // Screen transition animation on change of selected tab.
-            animateTabTransition: true,
-            curve: Curves.ease,
-            duration: Duration(milliseconds: 200),
-          ),
-          navBarStyle: NavBarStyle.style15, // Choose the nav bar style with this property.
-          onItemSelected: (x){
-            HapticFeedback.lightImpact();
-          },
-        ):const Text("loading"),
+      home: (!loading)
+          ? PersistentTabView(
+              tabs: _navBarItems(),
+              navBarBuilder: (navBarConfig) => Style15BottomNavBar(
+                navBarConfig: navBarConfig,
+                navBarDecoration: NavBarDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(0),
+                ),
+              ),
+              backgroundColor: Colors.black,
+              handleAndroidBackButtonPress: true,
+              resizeToAvoidBottomInset: true,
+              stateManagement: true,
+              popAllScreensOnTapOfSelectedTab: true,
+              screenTransitionAnimation: const ScreenTransitionAnimation(
+                curve: Curves.ease,
+                duration: Duration(milliseconds: 200),
+              ),
+              onTabChanged: (x) {
+                HapticFeedback.lightImpact();
+              },
+            )
+          : const Text("loading"),
     );
   }
 }
